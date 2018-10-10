@@ -1,0 +1,60 @@
+﻿@model IEnumerable<mvcTaskBoard.Models.Table_1>
+    @{
+        ViewBag.Title = "Index";
+    }
+<script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#sortable").sortable({
+            update: function (event, ui) {
+                var itemIds = "";
+                $("#sortable").find(".taskSingleInline").each(function () {
+                    var itemId = $(this).attr("data-taskid");
+                    itemIds = itemIds + itemId + ",";
+                });
+                $.ajax({
+                    url: '@Url.Action("UpdateItem","TaskBoard")',
+                    data: { itemIds: itemIds },
+                    type: 'POST',
+                    success: function (data) {
+
+                    },
+                    error: function (xhr, status, error) {
+
+                    }
+                });
+            }
+        });
+    });
+        
+</script>
+<style>
+    #sortable tr:hover{
+        background-color:#0094ff;
+        color:#fff;
+    }
+</style> 
+<div class="container">
+     <div class="col-md-6">
+         <table class="table table-bordered">
+             <thead>
+                 <tr>
+                     <th>ID</th>
+                     <th>Isim</th>
+                     <th>Pozisyon</th>
+                 </tr>
+             </thead>
+             <tbody id="sortable" style="cursor:pointer";>
+                 @foreach(var item in Model)
+                 {
+                     <tr>
+                         <td>@item.id</td>
+                         <td class="taskSingleInline" id="task@(item.id)" data-taskid="@(item.id)">@item.isim</td>
+                         <td>@item.rowNo</td>
+                     </tr>
+                 }
+             </tbody>
+         </table>
+         <a class="btn btn-primary" href="@Url.Action("Index","TaskBoard")">Guncelle</a>
+     </div>
+   </div>
